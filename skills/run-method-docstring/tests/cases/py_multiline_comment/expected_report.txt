@@ -1,0 +1,7 @@
+# src/py_multiline_comment.py
+
+def f(x):
+    # inline comment redacted marker
+    # inline comment redacted marker
+    # third untouched
+    return x

@@ -1,0 +1,49 @@
+Polyglot redaction test cases
+
+Each fixture represents a changed source file with four conceptual files: the original source before the change, the changed source after the change, the expected changed source after redaction, and the expected wording-free report. To reproduce a case, create a unified diff from before to after, copy after to a temporary source file, run redact_polyglot.py with that diff on stdin and an output report path, then compare the edited temporary source and report with the expected behavior described here.
+
+Common behavior every case should preserve:
+
+- Only documentation touched by added or changed new-side diff lines is redacted.
+- Pure deletions are ignored because the removed documentation no longer exists in the changed source.
+- Non-documentation code, blank lines, indentation, strings, and untouched comments stay byte-identical. The one exception is a multi-line block comment (/* ... */) with any touched line: it is redacted whole to keep the file valid.
+- Changed inline comments are replaced with the language-specific inline marker at the same position.
+- Changed doc comments or docstrings are removed, and the report shows only the enclosing signature or file-level sentinel.
+- Inline-comment report entries include a three-line source window around the comment.
+- If a report window overlaps a doc comment or docstring, the window uses the language-specific doc sentinel instead of leaking the old text.
+
+Python cases:
+
+- py_mixed: A single Python file changes more than one kind of documentation. Include a changed docstring and a changed inline comment so the expected report contains both a signature entry and a redacted context window.
+- py_module_docstring: A Python module-level docstring changes. Redaction removes the module docstring and the report uses the module-level sentinel instead of original docstring text.
+- py_multiline_comment: A consecutive Python comment block changes across multiple lines. Redaction replaces only the touched comment lines with the inline marker and leaves untouched neighboring comment lines intact.
+- py_overlap: A changed Python inline comment has a three-line report window that overlaps a docstring. The report must collapse the docstring to the docstring sentinel so no original docstring wording appears in the report.
+- py_pure_deletion: A Python docstring or comment is deleted with no replacement line in the changed file. The tool should make no redaction for that deleted documentation and should not report it.
+- py_trailing_and_sole: A Python trailing inline comment changes, and a sole-statement docstring changes inside an otherwise empty class or function body. The trailing comment marker stays after the code on the same line, and the removed sole docstring is replaced by pass so the file remains valid Python.
+
+Java cases:
+
+- java_block_comment: A Java block comment that is not Javadoc changes on some of its lines. The whole block comment is redacted, one Java inline-comment marker per physical line (touched or not), so no dangling `*/` is left and the file stays valid Java.
+- java_doc_comment: A Java Javadoc comment attached to a declaration changes. Redaction removes the Javadoc and the report contains the declaration signature, not the Javadoc text.
+- java_inline_comment: A Java // inline comment changes. Redaction replaces the touched line with the Java inline marker and the report contains a three-line window around it.
+- java_window_overlaps_doc: A changed Java inline comment has a report window that also contains a Javadoc comment. The report window replaces that Javadoc with the Java doc-comment sentinel.
+
+Bash cases:
+
+- bash_doc_comment: A Bash function doc block, represented by contiguous own-line comments immediately before a function definition, changes. Redaction removes the doc block and the report contains the function signature.
+- bash_file_doc: A leading Bash file-level comment block changes below any shebang. Redaction removes the file-level documentation and the report uses the Bash file-level sentinel.
+- bash_inline_comment: A Bash own-line inline comment changes. Redaction keeps the indentation and replaces only that comment text with the Bash inline marker; the report contains a context window.
+- bash_trailing_comment: A Bash trailing comment changes after a command. Redaction keeps the command and places the Bash inline marker after a single separating space.
+
+TypeScript cases:
+
+- ts_doc_comment: A TypeScript TSDoc comment attached to a declaration changes. Redaction removes the TSDoc and the report contains the declaration signature, including export syntax when present.
+- ts_inline_comment: A TypeScript // inline comment changes. Redaction replaces the touched line with the TypeScript inline marker and the report contains a three-line context window.
+- ts_pure_deletion: A TypeScript comment or TSDoc block is deleted with no replacement line in the changed file. The deleted documentation is neither redacted nor reported.
+- ts_window_overlaps_doc: A changed TypeScript inline comment has a report window that overlaps a TSDoc comment. The report window replaces the TSDoc with the TypeScript doc-comment sentinel.
+
+Dependency and runner notes:
+
+- The tool is implemented in redact_polyglot.py (run via redact_polyglot.sh).
+- Runtime dependencies are declared in pyproject.toml and locked in uv.lock.
+- The fixture runner in tests/run_tests.py discovers cases under tests/cases, builds the before-to-after diff, runs the tool against a copy of after, and compares the resulting source and report with expected outputs.

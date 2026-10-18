@@ -1,0 +1,7 @@
+I'd like you to use the Python project setup skill to create me a Python project called PR Scraper.
+
+The scope of the project will be to iterate over pull request reviews from public repositories in order to attempt to derive insights about coding methodology and best practices from human reviewers. 
+
+My ultimate goal though is to confirm that my Python setup for my integrated development environment works as I expect, such that I have go to implementation working. So I'd like You too, uh, I would, I'd like you to choose Some dependencies, e.g., a GitHub Python dependency, um, a unit testing library, um, a library for loading JSON into data classes and using data classes similar to Jackson annotated POJOs. The point being that I want some example code which for a given org repository and GitHub username, it lists all of their PRs that they've reviewed, saves it to a new line delimited text file.
+
+And then filters those reviews by whether the reviewer left two or more comments in the review body, writes another text file. Um, and then finally, which iterates over those pull requests and saves a JSON representation of their review to disk in a hierarchical file tree structure mirroring the org, reviewer and pull request number. 

@@ -1,0 +1,79 @@
+I want to set up this as a local Git repository which contains my agentic setup for both OpenCode and Claude Code. What that means is I should be able to copy the contents of this directory into a new project and then automatically have that project set up. If I'm running Claude Code or Open Code in that directory, have my agent files and rules files get picked up automatically. 
+
+I have an existing directory where these things are stored, but what we need to do is copy them over here and then demonstrate with some simple scripted smoke tests that Claude Code and OpenCode can actually pick them up and that they are loaded as appropriate. 
+
+the agents and skills are located here
+/Users/wadejensen/code/workspace/harness
+
+The goal is that is a project local skills, not system-wide skills and agents, and so they need to load automatically and override any system-level agents or configurations.
+
+it is expected that you copy skills and files over to here.
+Note that I want to find a way to share the same agent files and skill files between OpenCode and Claude, and the best way to do it is probably with symlinks. However, let's get this all working end-to-end with Claude first and a working smoke test before trying on OpenCode. 
+
+I'd also like you to tell me if there are any system level skills or agent configurations inside my home directory or elsewhere that I should be aware of and potentially disable because I like to have a per project view and understanding of what skills are enabled. 
+
+Success at the end of this would be a smoke test which launched a Claude code non-interactive instance and asked it what skills it had available, and it listed out all the skills we care about. Also, we should have our Claude Code set up so that by default we limit to 200K tokens and similar for OpenCode for our agents. The default sub-agent should be Sonnet 5, and the default agent should also be Sonnet 5. It's just a good all-round model. I do want the Oracle to run as Opus 5 though. And similarly, we should be able to invoke OpenCode and have it have access to our agents and skills automatically as one would expect. I'd also like an idempotent installation script for OpenCode and a wrapper script which controls where its database is located and pins the version of OpenCode preventing upgrades
+
+Write a 150 line or less markdown plan on how you want to fulfill this, or—and I'll give you feedback before you get started. However, you may do whatever research you want in the background while I'm responding.  
+
+---
+I moved PLAN.md to memory
+move librarian to sonnet 5
+disable the global matt pocock - I want to pick and choose which I use.
+yes you may git init when ready
+
+> `~/.config/opencode/opencode.json` only has an AWS MCP server config. This confirms we're building from scratch for OpenCode, including install.
+
+delete this
+
+use bin/opencode.sh
+scripts can still be for installation
+
+> 3. Fix `oracle.md` frontmatter typos (`Glon`→`Glob`, `Websearch`→`WebSearch`)
+
+are these typos or differences between claude code and opencode?
+
+update plan.md as you go
+---
+
+I ran the smoke test. It works correctly. 
+
+I want to remove the dataviz skill, the simplify skill, fewer-permission-prompts, keybindings-help, update-config, statusline-setup.
+
+Can we set up a Claude configuration JSON that blocks these and marks them as denied or removed? 
+
+I don't want either Claude or OpenCode to be privileged as to which owns the skills and agent files. So I actually want skills and agents to be top-level directories in the dotfiles repo. 
+
+I want a new `.sh` bash script which will create a new project for me, which symlinks the skills and relevant files from this dotfiles repository and constructs a new directory according to a user-specified name. The user must provide a `--path` for the project. It's a required arg, and we have a good help text if you don't provide it.
+
+So it should basically do everything that it needs to start a new project and have that be working. And then the improvement on our smoke test would actually be starting a new project, not running within this existing one, and seeing the test pass. So it would create a new project in a temp directory, for instance. 
+
+---
+
+I want to change this claude-smoke-test.sh  script such that all of the logic body sits inside a main method, and then main is invoked with all of the bash script arguments. Instead of using bash source to determine the repo root, we're going to use `git rev-parse --show-toplevel`.
+
+Note that computing any script constants lives outside of the main function, but everything else sits inside main unless it's in some kind of helper function. 
+
+---
+
+Please research how I can configure the terminal version of Cloud Code to show me the current number of input tokens consumed from the context window used in my session. 
+
+---
+In dot files, the skill for run method docstrings doesn't actually have a Python project fully set up associated with it. I'd like to set one up. Just a little mini local one. It doesn't need all the bells and whistles; it just needs to work, so basically having its own venv. And then anytime that an agent tries to use the redact_polyglot.py    , I'll need it to actually work. Maybe we should have a Bash script that idempotently initializes a Bash script that wraps `redact_polyglot`. Actually, that idempotently sets up a venv if one doesn't already exist underneath the run method docstring. That's probably the best way to do it. 
+
+This needs to work for any new project 
+
+
+---
+
+I'd like you to add a statusline to my projects claude settings, and it needs to be included when a new project is created
+
+I've renamed current CLAUDE.md to README.md
+
+We want an `AGENTS.md` a `CLAUDE.md` should be symlinked to it.
+In the AGENTS.md we will have it be a default state.
+And AGENTS.md needs to be copied over (not symlinked) to a new project, and CLAUDE.md symlinked to it.
+
+---
+
+I want an OpenCode idempotent installation script, and I want a wrapper script which pins to a specific version of OpenCode and points the SQLite. If you're running within a given project to a private .OpenCode data directory or similar locally inside of that project. I also need to be able to see that OpenCode can run with Modern GPT models, so GPT 5.5, 5.6, as well as Claude Code or Anthropic models through the API. 

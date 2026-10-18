@@ -1,0 +1,3 @@
+# src/ts_doc_comment.ts
+
+export function add(a: number, b: number): number

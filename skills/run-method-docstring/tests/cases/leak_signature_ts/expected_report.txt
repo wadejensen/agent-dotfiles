@@ -1,0 +1,22 @@
+# src/leak_signature_ts.ts
+
+export interface Event {
+  id: string;
+  kind: string;
+  // inline comment redacted marker
+  payload: unknown;
+}
+
+// doc comment redacted
+export type Shape = {
+  w: number; // inline comment redacted marker
+  h: number;
+};
+
+// doc comment redacted
+export const CONFIG = {
+  retries: 3, // inline comment redacted marker
+  verbose: false,
+};
+
+export interface Event

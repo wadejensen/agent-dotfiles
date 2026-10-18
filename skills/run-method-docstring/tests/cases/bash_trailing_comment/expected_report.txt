@@ -1,0 +1,6 @@
+# src/bash_trailing_comment.sh
+
+main() {
+  echo a # inline comment redacted marker
+  echo b
+}

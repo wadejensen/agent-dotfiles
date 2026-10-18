@@ -1,0 +1,35 @@
+{
+  "model": "sonnet",
+  "modelSettings": {
+    "sonnet": {
+      "effortLevel": "medium"
+    }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)/.claude/statusline.sh\"",
+    "padding": 0
+  },
+  "env": {
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
+    "ENABLE_PROMPT_CACHING_1H": "1"
+  },
+  "permissions": {
+    "deny": [
+      "Skill(dataviz)",
+      "Skill(simplify)",
+      "Skill(fewer-permission-prompts)",
+      "Skill(keybindings-help)",
+      "Skill(update-config)",
+      "Task(statusline-setup)"
+    ]
+  },
+  "skillOverrides": {
+    "dataviz": "off",
+    "simplify": "off",
+    "fewer-permission-prompts": "off",
+    "keybindings-help": "off",
+    "update-config": "off"
+  }
+}

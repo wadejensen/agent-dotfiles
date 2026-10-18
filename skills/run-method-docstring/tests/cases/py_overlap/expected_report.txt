@@ -1,0 +1,7 @@
+# src/py_overlap.py
+
+x = 1
+# inline comment redacted marker
+def g():
+    # docstring redacted
+    return 1

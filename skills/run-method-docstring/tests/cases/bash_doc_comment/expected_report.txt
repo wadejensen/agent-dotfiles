@@ -1,0 +1,3 @@
+# src/bash_doc_comment.sh
+
+greet()

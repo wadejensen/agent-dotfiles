@@ -1,0 +1,7 @@
+# src/leak_signature_java.java
+
+// doc comment redacted
+enum Color {
+    RED, // inline comment redacted marker
+    GREEN
+}

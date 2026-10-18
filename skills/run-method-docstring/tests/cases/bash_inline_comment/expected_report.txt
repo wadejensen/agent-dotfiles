@@ -1,0 +1,7 @@
+# src/bash_inline_comment.sh
+
+main() {
+  echo a
+  # inline comment redacted marker
+  echo b
+}

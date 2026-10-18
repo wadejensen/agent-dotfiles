@@ -1,0 +1,9 @@
+# src/java_inline_comment.java
+
+class A {
+    int f(int x) {
+        int y = x;
+        // inline comment redacted marker
+        return y;
+    }
+}

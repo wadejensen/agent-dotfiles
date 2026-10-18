@@ -1,0 +1,11 @@
+# src/leak_nearby_sh.sh
+
+a=1 # inline comment redacted marker
+mid=5
+b=2 # inline comment redacted marker
+
+main() {
+  echo a
+  # inline comment redacted marker
+  echo b
+}

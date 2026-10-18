@@ -1,0 +1,6 @@
+# src/leak_signature_fallback_ts.ts
+
+export const CONFIG = {
+  retries: 3,
+  verbose: false,
+};

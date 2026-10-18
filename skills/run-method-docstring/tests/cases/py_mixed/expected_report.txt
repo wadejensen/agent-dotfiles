@@ -1,0 +1,7 @@
+# src/py_mixed.py
+
+def add(a, b):
+    # docstring redacted
+    # inline comment redacted marker
+    total = a + b
+    return total

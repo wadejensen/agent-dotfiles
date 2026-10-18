@@ -1,0 +1,7 @@
+# src/ts_window_overlaps_doc.ts
+
+const a = 1;
+// inline comment redacted marker
+// doc comment redacted
+function f(): number {
+  return a;

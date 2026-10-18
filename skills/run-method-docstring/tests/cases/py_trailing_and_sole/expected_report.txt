@@ -1,0 +1,9 @@
+# src/py_trailing_and_sole.py
+
+
+
+def f(x):
+    y = x + 1 # inline comment redacted marker
+    return y
+
+class Empty:

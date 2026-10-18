@@ -1,0 +1,7 @@
+# src/ts_inline_comment.ts
+
+function f(x: number): number {
+  const y = x; // old
+  // inline comment redacted marker
+  return y;
+}
