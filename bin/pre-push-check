@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# git pre-push hook: refuse to push commits that carry agent attribution.
+# Install: ln -sf ../../bin/pre-push-check .git/hooks/pre-push
+exec "$(git rev-parse --show-toplevel)/bin/git-push-clean" --check

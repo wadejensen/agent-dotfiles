@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Scrub agent attribution (Co-Authored-By: Claude, "Generated with Claude Code", ...)
+# from commits that are not on any remote, then run `git push "$@"`.
+# Usage: git-push-clean [git push args]   (put bin/ on PATH to use `git push-clean`)
+#        git-push-clean --check            exit 1 if unpushed commits carry attribution
+set -euo pipefail
+
+PATTERN='^(co-authored-by:.*(claude|anthropic|copilot|codex|cursor|gemini|aider|devin)|(🤖 )?generated (with|by) .*(claude|anthropic|copilot|codex|cursor|gemini|aider|devin))'
+
+# Commits reachable from HEAD that no remote-tracking ref contains.
+unpushed() { git rev-list HEAD --not --remotes; }
+
+dirty() {
+  local c
+  for c in $(unpushed); do
+    git log -1 --format=%B "$c" | grep -qiE "$PATTERN" && echo "$c"
+  done
+  return 0
+}
+
+if [[ "${1:-}" == "--check" ]]; then
+  bad="$(dirty)"
+  [[ -z "$bad" ]] && exit 0
+  echo "Unpushed commits carry agent attribution (run git-push-clean):" >&2
+  for c in $bad; do git log -1 --format='  %h %s' "$c" >&2; done
+  exit 1
+fi
+
+if [[ -n "$(dirty)" ]]; then
+  [[ -z "$(git status --porcelain --untracked-files=no)" ]] || {
+    echo "Error: commit or stash tracked changes first; scrubbing rewrites history." >&2; exit 1; }
+  export PATTERN FILTER_BRANCH_SQUELCH_WARNING=1
+  git filter-branch -f --msg-filter '
+    grep -viE "$PATTERN" | perl -0pe "s/\n+\z/\n/"
+  ' -- HEAD --not --remotes >/dev/null
+  echo "Scrubbed agent attribution from unpushed commits." >&2
+fi
+
+exec git push "$@"
