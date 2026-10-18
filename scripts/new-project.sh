@@ -18,10 +18,15 @@ AGENTS.md is copied (not symlinked) into the project so it can be
 edited per-project, and CLAUDE.md is symlinked to it locally. A
 memory/ scaffold (sessions/, specs/, gitignored) is copied in too.
 
+A docs/ scaffold (empty adr.md, functional-requirements.md, and
+principles.md, plus an AGENTS.md pointing at the eng-guardrails
+skill) is copied in so the project can record its guardrails.
+
 Required:
   --path <dir>   Directory for the new project. Created if it doesn't
                  exist. Refuses to run if it already has a .claude,
-                 .opencode, AGENTS.md, CLAUDE.md, or memory directory.
+                 .opencode, AGENTS.md, CLAUDE.md, memory, or docs
+                 directory.
 
 Options:
   -h, --help     Show this help text.
@@ -62,8 +67,8 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 mkdir -p "$PROJECT_PATH"
 PROJECT_PATH="$(cd "$PROJECT_PATH" && pwd)"
 
-if [[ -e "$PROJECT_PATH/.claude" || -e "$PROJECT_PATH/.opencode" || -e "$PROJECT_PATH/AGENTS.md" || -e "$PROJECT_PATH/CLAUDE.md" || -e "$PROJECT_PATH/memory" ]]; then
-  echo "Error: $PROJECT_PATH already contains a .claude, .opencode, AGENTS.md, CLAUDE.md, or memory directory" >&2
+if [[ -e "$PROJECT_PATH/.claude" || -e "$PROJECT_PATH/.opencode" || -e "$PROJECT_PATH/AGENTS.md" || -e "$PROJECT_PATH/CLAUDE.md" || -e "$PROJECT_PATH/memory" || -e "$PROJECT_PATH/docs" ]]; then
+  echo "Error: $PROJECT_PATH already contains a .claude, .opencode, AGENTS.md, CLAUDE.md, memory, or docs directory" >&2
   exit 1
 fi
 
@@ -73,7 +78,6 @@ ln -s "$REPO_ROOT/agents" "$PROJECT_PATH/.claude/agents"
 ln -s "$REPO_ROOT/skills" "$PROJECT_PATH/.claude/skills"
 ln -s "$REPO_ROOT/.claude/settings.json" "$PROJECT_PATH/.claude/settings.json"
 ln -s "$REPO_ROOT/bin/statusline.sh" "$PROJECT_PATH/.claude/statusline.sh"
-ln -s "$REPO_ROOT/bin/forbid-worktrees.sh" "$PROJECT_PATH/.claude/forbid-worktrees.sh"
 
 ln -s "$REPO_ROOT/agents" "$PROJECT_PATH/.opencode/agent"
 ln -s "$REPO_ROOT/skills" "$PROJECT_PATH/.opencode/skills"
@@ -82,6 +86,7 @@ cp "$REPO_ROOT/AGENTS.md" "$PROJECT_PATH/AGENTS.md"
 ln -s AGENTS.md "$PROJECT_PATH/CLAUDE.md"
 
 cp -R "$REPO_ROOT/memory" "$PROJECT_PATH/memory"
+cp -R "$REPO_ROOT/docs" "$PROJECT_PATH/docs"
 
 touch "$PROJECT_PATH/.gitignore"
 for entry in ".claude/" ".opencode/"; do
