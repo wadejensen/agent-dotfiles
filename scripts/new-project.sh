@@ -22,6 +22,10 @@ A docs/ scaffold (empty adr.md, functional-requirements.md, and
 principles.md, plus an AGENTS.md pointing at the eng-guardrails
 skill) is copied in so the project can record its guardrails.
 
+The pre-push hook (blocks pushes of commits carrying agent attribution;
+use bin/git-push-clean to scrub them) is symlinked into this repo and into
+the new project, if each is a git repo.
+
 Required:
   --path <dir>   Directory for the new project. Created if it doesn't
                  exist. Refuses to run if it already has a .claude,
@@ -64,6 +68,22 @@ fi
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# Symlink the pre-push attribution check into a repo's hooks dir. Skips
+# non-repos and never replaces an existing, different pre-push hook.
+install_pre_push_hook() {
+  local repo="$1" hooks
+  hooks="$(git -C "$repo" rev-parse --path-format=absolute --git-path hooks 2>/dev/null)" || {
+    echo "Note: $repo is not a git repo; skipped pre-push hook (rerun after git init)" >&2
+    return 0
+  }
+  mkdir -p "$hooks"
+  if [[ -e "$hooks/pre-push" && "$(readlink "$hooks/pre-push" 2>/dev/null)" != "$REPO_ROOT/bin/pre-push-check" ]]; then
+    echo "Note: $hooks/pre-push already exists; left unchanged" >&2
+    return 0
+  fi
+  ln -sfn "$REPO_ROOT/bin/pre-push-check" "$hooks/pre-push"
+}
+
 mkdir -p "$PROJECT_PATH"
 PROJECT_PATH="$(cd "$PROJECT_PATH" && pwd)"
 
@@ -93,5 +113,8 @@ touch "$PROJECT_PATH/.gitignore"
 for entry in ".claude/" ".opencode/"; do
   grep -qxF "$entry" "$PROJECT_PATH/.gitignore" || echo "$entry" >> "$PROJECT_PATH/.gitignore"
 done
+
+install_pre_push_hook "$REPO_ROOT"
+install_pre_push_hook "$PROJECT_PATH"
 
 echo "Project ready at $PROJECT_PATH"
