@@ -78,6 +78,7 @@ ln -s "$REPO_ROOT/agents" "$PROJECT_PATH/.claude/agents"
 ln -s "$REPO_ROOT/skills" "$PROJECT_PATH/.claude/skills"
 ln -s "$REPO_ROOT/.claude/settings.json" "$PROJECT_PATH/.claude/settings.json"
 ln -s "$REPO_ROOT/bin/statusline.sh" "$PROJECT_PATH/.claude/statusline.sh"
+ln -s "$REPO_ROOT/bin/forbid-worktrees.sh" "$PROJECT_PATH/.claude/forbid-worktrees.sh"
 
 ln -s "$REPO_ROOT/agents" "$PROJECT_PATH/.opencode/agent"
 ln -s "$REPO_ROOT/skills" "$PROJECT_PATH/.opencode/skills"

@@ -22,7 +22,9 @@
       "Skill(fewer-permission-prompts)",
       "Skill(keybindings-help)",
       "Skill(update-config)",
-      "Task(statusline-setup)"
+      "Task(statusline-setup)",
+      "EnterWorktree",
+      "ExitWorktree"
     ]
   },
   "skillOverrides": {
@@ -31,5 +33,21 @@
     "fewer-permission-prompts": "off",
     "keybindings-help": "off",
     "update-config": "off"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|EnterWorktree|ExitWorktree|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)/.claude/forbid-worktrees.sh\""
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "bgIsolation": "none"
   }
 }
