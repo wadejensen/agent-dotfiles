@@ -22,8 +22,12 @@ A docs/ scaffold (empty adr.md, functional-requirements.md, and
 principles.md, plus an AGENTS.md pointing at the eng-guardrails
 skill) is copied in so the project can record its guardrails.
 
+Every file in this repo's bin/ is symlinked into the project's bin/
+(existing names are left alone, linked files are gitignored), and
+.envrc gets "PATH_add bin" for direnv.
+
 The pre-push hook (blocks pushes of commits carrying agent attribution;
-use bin/git-push-clean to scrub them) is symlinked into this repo and into
+use bin/git-push to scrub them) is symlinked into this repo and into
 the new project, if each is a git repo.
 
 Required:
@@ -77,7 +81,7 @@ install_pre_push_hook() {
     return 0
   }
   mkdir -p "$hooks"
-  if [[ -e "$hooks/pre-push" && "$(readlink "$hooks/pre-push" 2>/dev/null)" != "$REPO_ROOT/bin/pre-push-check" ]]; then
+  if [[ -e "$hooks/pre-push" && "$(realpath "$hooks/pre-push" 2>/dev/null)" != "$(realpath "$REPO_ROOT/bin/pre-push-check")" ]]; then
     echo "Note: $hooks/pre-push already exists; left unchanged" >&2
     return 0
   fi
@@ -109,8 +113,25 @@ ln -s AGENTS.md "$PROJECT_PATH/CLAUDE.md"
 cp -R "$REPO_ROOT/memory" "$PROJECT_PATH/memory"
 cp -R "$REPO_ROOT/docs" "$PROJECT_PATH/docs"
 
+# Symlink each of this repo's bin/ files into the project's bin/. An existing
+# bin/ dir is fine; an existing name is never replaced.
+mkdir -p "$PROJECT_PATH/bin"
+LINKED_BIN=()
+for src in "$REPO_ROOT"/bin/*; do
+  name="$(basename "$src")"
+  if [[ -e "$PROJECT_PATH/bin/$name" || -L "$PROJECT_PATH/bin/$name" ]]; then
+    echo "Note: bin/$name already exists in the project; left unchanged" >&2
+    continue
+  fi
+  ln -s "$src" "$PROJECT_PATH/bin/$name"
+  LINKED_BIN+=("bin/$name")
+done
+
+# Put bin/ on PATH via direnv, without clobbering an existing .envrc.
+grep -qxF "PATH_add bin" "$PROJECT_PATH/.envrc" 2>/dev/null || echo "PATH_add bin" >> "$PROJECT_PATH/.envrc"
+
 touch "$PROJECT_PATH/.gitignore"
-for entry in ".claude/" ".opencode/"; do
+for entry in ".claude/" ".opencode/" "${LINKED_BIN[@]+"${LINKED_BIN[@]}"}"; do
   grep -qxF "$entry" "$PROJECT_PATH/.gitignore" || echo "$entry" >> "$PROJECT_PATH/.gitignore"
 done
 

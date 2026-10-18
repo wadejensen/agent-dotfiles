@@ -24,6 +24,12 @@ Do not blindly perform global searches over the entire repo.
   GitHub retains the branch history if it's ever wanted.
 - Don't clean up local branches — maintenance is automated.
 
+## Pushing
+
+- Push with `bin/git-push` (same arguments as `git push`), not bare `git push`.
+- Never use `--no-verify`.
+- Commit or stash tracked changes first.
+
 ## Merging
 
 - PRs are **squash-merged**, always a manual step requiring operator and colleague

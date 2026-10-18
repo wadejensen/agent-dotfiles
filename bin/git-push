@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Scrub agent attribution (Co-Authored-By: Claude, "Generated with Claude Code", ...)
 # from commits that are not on any remote, then run `git push "$@"`.
-# Usage: git-push-clean [git push args]   (put bin/ on PATH to use `git push-clean`)
-#        git-push-clean --check            exit 1 if unpushed commits carry attribution
+# Usage: git-push [git push args]   (put bin/ on PATH to use `git-push`)
+#        git-push --check            exit 1 if unpushed commits carry attribution
 set -euo pipefail
 
 PATTERN='^(co-authored-by:.*(claude|anthropic|copilot|codex|cursor|gemini|aider|devin)|(🤖 )?generated (with|by) .*(claude|anthropic|copilot|codex|cursor|gemini|aider|devin))'
@@ -21,7 +21,7 @@ dirty() {
 if [[ "${1:-}" == "--check" ]]; then
   bad="$(dirty)"
   [[ -z "$bad" ]] && exit 0
-  echo "Unpushed commits carry agent attribution (run git-push-clean):" >&2
+  echo "Unpushed commits carry agent attribution (run git-push):" >&2
   for c in $bad; do git log -1 --format='  %h %s' "$c" >&2; done
   exit 1
 fi

@@ -4,4 +4,4 @@
 # path so it works from any repo that symlinks to it.
 set -euo pipefail
 real="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
-exec "$(dirname "$real")/git-push-clean" --check
+exec "$(dirname "$real")/git-push" --check
