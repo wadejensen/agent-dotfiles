@@ -9,10 +9,12 @@ usage() {
 Usage: new-project.sh --path <directory>
 
 Creates (or wires up) a project directory with this harness's agents,
-skills, and settings, shared via symlinks back into this repo. Both
-Claude Code (.claude/) and OpenCode (.opencode/) are configured, and
-both are added to the project's .gitignore since they're symlinks
-into this shared repo, not project-owned files.
+skills, and settings. Claude Code (.claude/) loads them as the
+wj plugin: .claude/settings.local.json is a symlink to this repo's
+.claude/settings.json, which enables the plugin and sets the statusline,
+model, env, and deny list. OpenCode (.opencode/) symlinks the agents and skills
+directories. Both are added to the project's .gitignore since they're
+wiring into this shared repo, not project-owned files.
 
 AGENTS.md is copied (not symlinked) into the project so it can be
 edited per-project, and CLAUDE.md is symlinked to it locally. A
@@ -98,11 +100,25 @@ fi
 
 mkdir -p "$PROJECT_PATH/.claude" "$PROJECT_PATH/.opencode"
 
-ln -s "$REPO_ROOT/agents" "$PROJECT_PATH/.claude/agents"
-ln -s "$REPO_ROOT/skills" "$PROJECT_PATH/.claude/skills"
-ln -s "$REPO_ROOT/.claude/settings.json" "$PROJECT_PATH/.claude/settings.json"
-ln -s "$REPO_ROOT/bin/statusline.sh" "$PROJECT_PATH/.claude/statusline.sh"
-ln -s "$REPO_ROOT/bin/forbid-worktrees.sh" "$PROJECT_PATH/.claude/forbid-worktrees.sh"
+# Claude Code gets agents, skills, and hooks from this repo as the wj
+# plugin. The project's settings.local.json is a symlink to this repo's
+# settings.json, which enables the plugin and sets the statusline, model,
+# env, and deny list; the project keeps its own settings.json. Claude Code
+# refuses to write through the symlink, so local-scope writes (e.g.
+# /plugin --scope local) fail in the project by design.
+ln -s "$REPO_ROOT/.claude/settings.json" "$PROJECT_PATH/.claude/settings.local.json"
+
+# settings.json refers to this repo as ~/code/agent-dotfiles.
+if [[ "$REPO_ROOT" != "$HOME/code/agent-dotfiles" ]]; then
+  echo "Warning: this repo is at $REPO_ROOT, but .claude/settings.json expects ~/code/agent-dotfiles" >&2
+fi
+
+# The marketplace must be registered once per machine; the path in
+# settings.json alone does not register it.
+if ! claude plugin marketplace list 2>/dev/null | grep -q agent-dotfiles; then
+  echo "Note: register the plugin marketplace once on this machine:" >&2
+  echo "  claude plugin marketplace add $REPO_ROOT" >&2
+fi
 
 ln -s "$REPO_ROOT/agents" "$PROJECT_PATH/.opencode/agent"
 ln -s "$REPO_ROOT/skills" "$PROJECT_PATH/.opencode/skills"

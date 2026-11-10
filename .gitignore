@@ -3,3 +3,4 @@
 __pycache__/
 wip/
 skills/graduate-rules/
+.claude/settings.local.json

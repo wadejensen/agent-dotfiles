@@ -1,0 +1,13 @@
+{
+  "name": "agent-dotfiles",
+  "owner": {
+    "name": "Wade Jensen"
+  },
+  "plugins": [
+    {
+      "name": "wj",
+      "source": "./",
+      "description": "Wade's personal skills, agents, and worktree guard, namespaced wj:<name>."
+    }
+  ]
+}

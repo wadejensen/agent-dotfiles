@@ -15,10 +15,11 @@ check_scaffolding() {
   local project_dir="$1"
   local failures=()
 
-  [[ -L "$project_dir/.claude/agents" ]] || failures+=(".claude/agents is not a symlink")
-  [[ -L "$project_dir/.claude/skills" ]] || failures+=(".claude/skills is not a symlink")
-  [[ -L "$project_dir/.claude/settings.json" ]] || failures+=(".claude/settings.json is not a symlink")
-  [[ -L "$project_dir/.claude/statusline.sh" ]] || failures+=(".claude/statusline.sh is not a symlink")
+  if [[ -L "$project_dir/.claude/settings.local.json" ]]; then
+    [[ "$(readlink "$project_dir/.claude/settings.local.json")" == "$REPO_ROOT/.claude/settings.json" ]] || failures+=(".claude/settings.local.json does not point at $REPO_ROOT/.claude/settings.json")
+  else
+    failures+=(".claude/settings.local.json is missing or not a symlink")
+  fi
   [[ -L "$project_dir/.opencode/agent" ]] || failures+=(".opencode/agent is not a symlink")
   [[ -L "$project_dir/.opencode/skills" ]] || failures+=(".opencode/skills is not a symlink")
 

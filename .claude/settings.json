@@ -5,11 +5,6 @@
       "effortLevel": "medium"
     }
   },
-  "statusLine": {
-    "type": "command",
-    "command": "in=$(cat); d=$(printf '%s' \"$in\" | python3 -c 'import json,sys;print(json.load(sys.stdin).get(\"workspace\",{}).get(\"project_dir\",\"\"))'); printf '%s' \"$in\" | \"${d:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}/.claude/statusline.sh\"",
-    "padding": 0
-  },
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
@@ -52,6 +47,23 @@
   },
   "worktree": {
     "bgIsolation": "none"
+  },
+  "enabledPlugins": {
+    "wj@agent-dotfiles": true
+  },
+  "extraKnownMarketplaces": {
+    "agent-dotfiles": {
+      "source": {
+        "source": "directory",
+        "path": "~/code/agent-dotfiles"
+      }
+    }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/code/agent-dotfiles/bin/statusline.sh",
+    "padding": 0
+  }
   },
   "attribution": false
 }

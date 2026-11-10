@@ -1,1 +1,0 @@
-../bin/forbid-worktrees.sh
