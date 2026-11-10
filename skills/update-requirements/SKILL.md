@@ -1,3 +1,8 @@
+---
+name: update-requirements
+description: Record undocumented requirements and decisions from a session in requirements.md and ADR.md.
+---
+
 Review a coding agent conversation history, identify undocumented requirements and architectural decisions, and record them.
 
 1. Read conversation transcript and list files changed.

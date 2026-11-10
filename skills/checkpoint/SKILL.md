@@ -1,3 +1,8 @@
+---
+name: checkpoint
+description: Save session progress to memory/sessions/ for the next agent. Use on "checkpoint" or "wind down".
+---
+
 Identity the latest session number by listing memory/sessions/session{$}.md.
 If no sessions exist, this is the first session.
 

@@ -1,3 +1,8 @@
+---
+name: eng-guardrails
+description: Review code against ADRs, requirements, and principles in docs/, or add new guardrails.
+---
+
 # Eng Guardrails
 
 Defines a hierarchy of design guardrails for software development and standarised operations on guardrails.

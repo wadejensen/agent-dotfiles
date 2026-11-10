@@ -1,3 +1,8 @@
+---
+name: clean-the-kitchen
+description: Before adding a feature, check if a refactor would make it fit cleanly.
+---
+
 ## Cleaning the Kitchen
 
 Before you add new functionality, picture the change you are going to make and where you are going to put it. Does the conceptual framework of this new behavior slot tidily into the conceptual framework of the area of the code where you will be adding it?

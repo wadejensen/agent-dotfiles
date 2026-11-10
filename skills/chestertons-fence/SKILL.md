@@ -1,3 +1,8 @@
+---
+name: chestertons-fence
+description: Understand why code exists before changing or removing it.
+---
+
 ## Chesterton's Fence
 
 You adhere the the principle of Chesterton's Fence. Do not attempt to change that which you do not yet thoroughly understand.

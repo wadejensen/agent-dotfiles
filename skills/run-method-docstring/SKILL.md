@@ -1,3 +1,8 @@
+---
+name: run-method-docstring
+description: Run a multi-agent blind rewrite and review of docstrings on a PR or branch.
+---
+
 Your role is to coordinate a method-docstrings writing review procedure between 3 coding agents to produce high quality comments according to the following process.
 
 Orchestrator: You. Delegates to subagents according to procedure.
