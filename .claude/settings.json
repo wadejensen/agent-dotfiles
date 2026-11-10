@@ -24,7 +24,10 @@
       "Skill(update-config)",
       "Task(statusline-setup)",
       "EnterWorktree",
-      "ExitWorktree"
+      "ExitWorktree",
+      "Read(~/.secrets/**)",
+      "Read(~/.zshrc)",
+      "Bash(cat ~/.secrets/*)"
     ]
   },
   "skillOverrides": {
