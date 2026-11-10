@@ -7,7 +7,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)/.claude/statusline.sh\"",
+    "command": "in=$(cat); d=$(printf '%s' \"$in\" | python3 -c 'import json,sys;print(json.load(sys.stdin).get(\"workspace\",{}).get(\"project_dir\",\"\"))'); printf '%s' \"$in\" | \"${d:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}/.claude/statusline.sh\"",
     "padding": 0
   },
   "env": {
@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$(git rev-parse --show-toplevel 2>/dev/null || pwd)/.claude/forbid-worktrees.sh\""
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/forbid-worktrees.sh\""
           }
         ]
       }
@@ -49,5 +49,6 @@
   },
   "worktree": {
     "bgIsolation": "none"
-  }
+  },
+  "attribution": false
 }
