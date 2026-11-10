@@ -32,19 +32,6 @@
     "keybindings-help": "off",
     "update-config": "off"
   },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash|EnterWorktree|ExitWorktree|Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/forbid-worktrees.sh\""
-          }
-        ]
-      }
-    ]
-  },
   "worktree": {
     "bgIsolation": "none"
   },
@@ -63,7 +50,6 @@
     "type": "command",
     "command": "~/code/agent-dotfiles/bin/statusline.sh",
     "padding": 0
-  }
   },
   "attribution": false
 }
